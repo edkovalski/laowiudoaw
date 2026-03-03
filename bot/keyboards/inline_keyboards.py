@@ -1,19 +1,39 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
-from config import DIAMONDS_PACKAGES
+from config import DIAMONDS_PACKAGES, VOUCHER_PACKAGES, EVO_PACKAGES
 
 def get_start_keyboard():
     keyboard = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="🛒 Сделать заказ", callback_data="make_order")],
+        [InlineKeyboardButton(text="� Алмазы", callback_data="category_diamonds")],
+        [InlineKeyboardButton(text="🎫 Ваучеры", callback_data="category_vouchers")],
+        [InlineKeyboardButton(text="🎮 EVO пропуски", callback_data="category_evo")],
         [InlineKeyboardButton(text="📜 История заказов", callback_data="order_history")],
         [InlineKeyboardButton(text="💬 Написать админу", callback_data="message_admin")]
     ])
     return keyboard
 
-def get_packages_keyboard():
+def get_diamonds_keyboard():
     buttons = []
     for package_key, package_data in DIAMONDS_PACKAGES.items():
-        text = f"💎 {package_data['diamonds']} алмазов - {package_data['price']}₽"
-        buttons.append([InlineKeyboardButton(text=text, callback_data=f"package_{package_key}")])
+        text = f"💎 {package_data['name']} - {package_data['price']} сомони"
+        buttons.append([InlineKeyboardButton(text=text, callback_data=f"package_diamonds_{package_key}")])
+    
+    keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
+    return keyboard
+
+def get_vouchers_keyboard():
+    buttons = []
+    for package_key, package_data in VOUCHER_PACKAGES.items():
+        text = f"🎫 {package_data['name']} - {package_data['price']} сомони"
+        buttons.append([InlineKeyboardButton(text=text, callback_data=f"package_vouchers_{package_key}")])
+    
+    keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
+    return keyboard
+
+def get_evo_keyboard():
+    buttons = []
+    for package_key, package_data in EVO_PACKAGES.items():
+        text = f"🎮 {package_data['name']} - {package_data['price']} сомони"
+        buttons.append([InlineKeyboardButton(text=text, callback_data=f"package_evo_{package_key}")])
     
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     return keyboard
@@ -45,6 +65,13 @@ def get_order_history_keyboard(orders):
 
 def get_back_to_menu_keyboard():
     keyboard = InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text="🔙 В главное меню", callback_data="back_to_menu")]
+    ])
+    return keyboard
+
+def get_reply_keyboard(order_id: int):
+    keyboard = InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text="💬 Ответить", callback_data=f"reply_to_admin_{order_id}")],
         [InlineKeyboardButton(text="🔙 В главное меню", callback_data="back_to_menu")]
     ])
     return keyboard

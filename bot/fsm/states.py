@@ -6,6 +6,7 @@ class OrderStates(StatesGroup):
     order_confirmation = State()
     payment_proof = State()
     message_to_admin = State()
+    reply_to_admin = State()
 
 class AdminStates(StatesGroup):
     rejection_reason = State()

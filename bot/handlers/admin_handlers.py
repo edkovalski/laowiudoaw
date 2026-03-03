@@ -6,6 +6,7 @@ from aiogram.types import CallbackQuery, Message
 from fsm.states import AdminStates
 from database import db
 from config import ADMIN_ID, BOT_TOKEN
+from keyboards.inline_keyboards import get_reply_keyboard
 
 router = Router()
 
@@ -130,7 +131,8 @@ async def reply_to_user_sent(message: Message, state: FSMContext):
         
         await bot.send_message(
             chat_id=order.user_id,
-            text=f"� **Сообщение от администратора по заказу #{order.id}:**\n\n{reply_text}"
+            text=f"💬 Сообщение от администратора по заказу #{order.id}:\n\n{reply_text}\n\nНажмите 'Ответить', чтобы ответить администратору:",
+            reply_markup=get_reply_keyboard(order.id)
         )
         
         await message.answer(
@@ -147,14 +149,6 @@ async def admin_command(message: Message):
         await message.answer("❌ Доступ запрещен")
         return
     
-    pending_orders = await db.get_pending_orders()
-    
-    if not pending_orders:
-        await message.answer("📋 Нет ожидающих заказов")
-        return
-    
-    text = "📋 **Ожидающие заказы:**\n\n"
-    for order in pending_orders:
-        text += f"🔸 Заказ #{order.id}: {order.diamonds_amount}💎 - {order.amount}₽\n"
-    
-    await message.answer(text)
+    # Перенаправляем на новую админ-панель
+    from handlers.admin_panel import admin_command as admin_panel_command
+    await admin_panel_command(message, None)
